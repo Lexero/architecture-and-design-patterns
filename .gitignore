@@ -17,3 +17,10 @@
 *.swo
 *~
 ###< IDE and OS files ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+/tests/.phpunit.cache/
+.phpunit.result.cache
+###< phpunit/phpunit ###
