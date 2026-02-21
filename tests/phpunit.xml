@@ -10,6 +10,10 @@
         <testsuite name="QuadraticEquation">
             <file>DesignPatterns/QuadraticEquationTest.php</file>
         </testsuite>
+
+        <testsuite name="SpaceObject">
+            <directory>SpaceObject</directory>
+        </testsuite>
     </testsuites>
 
     <php>
