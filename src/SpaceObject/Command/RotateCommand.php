@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\SpaceObject\Command;
 
 use App\SpaceObject\Adapter\RotatableAdapter;
+use App\SpaceObject\Contract\CommandInterface;
 use App\SpaceObject\Contract\RotatableInterface;
 
-class Rotate
+class RotateCommand implements CommandInterface
 {
     public function __construct(
         private readonly RotatableInterface $rotatable,

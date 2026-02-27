@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\SpaceObject\Command;
 
-use App\SpaceObject\Command\Move;
+use App\SpaceObject\Command\MoveCommand;
 use App\SpaceObject\Contract\MovableInterface;
 use App\SpaceObject\Exception\DirectionReadException;
 use App\SpaceObject\Exception\LocationReadException;
@@ -14,7 +14,7 @@ use App\SpaceObject\ValueObject\Point;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class MoveTest extends TestCase
+class MoveCommandTest extends TestCase
 {
     private MovableInterface $movable;
     protected function setUp(): void
@@ -43,7 +43,7 @@ class MoveTest extends TestCase
                 return $location->x === 5 && $location->y === 8;
             }));
 
-        $move = new Move($this->movable);
+        $move = new MoveCommand($this->movable);
         $move->execute();
     }
 
@@ -53,7 +53,7 @@ class MoveTest extends TestCase
             ->method('getLocation')
             ->willThrowException(new RuntimeException('Location unavailable'));
 
-        $move = new Move($this->movable);
+        $move = new MoveCommand($this->movable);
 
         $this->expectException(LocationReadException::class);
         $move->execute();
@@ -69,7 +69,7 @@ class MoveTest extends TestCase
             ->method('getVelocity')
             ->willThrowException(new RuntimeException('Velocity unavailable'));
 
-        $move = new Move($this->movable);
+        $move = new MoveCommand($this->movable);
 
         $this->expectException(VelocityReadException::class);
         $move->execute();
@@ -89,7 +89,7 @@ class MoveTest extends TestCase
             ->method('getDirection')
             ->willThrowException(new RuntimeException('Direction unavailable'));
 
-        $move = new Move($this->movable);
+        $move = new MoveCommand($this->movable);
 
         $this->expectException(DirectionReadException::class);
         $move->execute();
@@ -113,7 +113,7 @@ class MoveTest extends TestCase
             ->method('setLocation')
             ->willThrowException(new RuntimeException('Location write failed'));
 
-        $move = new Move($this->movable);
+        $move = new MoveCommand($this->movable);
 
         $this->expectException(LocationWriteException::class);
         $move->execute();
