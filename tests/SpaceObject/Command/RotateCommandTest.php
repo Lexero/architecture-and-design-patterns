@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\SpaceObject\Command;
 
-use App\SpaceObject\Command\Rotate;
+use App\SpaceObject\Command\RotateCommand;
 use App\SpaceObject\Contract\RotatableInterface;
 use App\SpaceObject\Exception\AngularVelocityReadException;
 use App\SpaceObject\Exception\DirectionReadException;
@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class RotateTest extends TestCase
+class RotateCommandTest extends TestCase
 {
     private RotatableInterface $rotatable;
     protected function setUp(): void
@@ -36,7 +36,7 @@ class RotateTest extends TestCase
             ->method('setDirection')
             ->with($expectedAngle);
 
-        $rotate = new Rotate($this->rotatable);
+        $rotate = new RotateCommand($this->rotatable);
         $rotate->execute();
     }
 
@@ -55,7 +55,7 @@ class RotateTest extends TestCase
             ->method('getDirection')
             ->willThrowException(new RuntimeException('Direction unavailable'));
 
-        $rotate = new Rotate($this->rotatable);
+        $rotate = new RotateCommand($this->rotatable);
 
         $this->expectException(DirectionReadException::class);
         $rotate->execute();
@@ -71,7 +71,7 @@ class RotateTest extends TestCase
             ->method('getAngularVelocity')
             ->willThrowException(new RuntimeException('Angular velocity unavailable'));
 
-        $rotate = new Rotate($this->rotatable);
+        $rotate = new RotateCommand($this->rotatable);
 
         $this->expectException(AngularVelocityReadException::class);
         $rotate->execute();
@@ -91,7 +91,7 @@ class RotateTest extends TestCase
             ->method('setDirection')
             ->willThrowException(new RuntimeException('Direction write failed'));
 
-        $rotate = new Rotate($this->rotatable);
+        $rotate = new RotateCommand($this->rotatable);
 
         $this->expectException(DirectionWriteException::class);
         $rotate->execute();
