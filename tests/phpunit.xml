@@ -22,6 +22,10 @@
         <testsuite name="IoC">
             <directory>IoC</directory>
         </testsuite>
+
+        <testsuite name="AdapterGenerator">
+            <directory>AdapterGenerator</directory>
+        </testsuite>
     </testsuites>
 
     <php>
