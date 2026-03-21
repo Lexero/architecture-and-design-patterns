@@ -14,6 +14,14 @@
         <testsuite name="SpaceObject">
             <directory>SpaceObject</directory>
         </testsuite>
+
+        <testsuite name="ExceptionHandling">
+            <directory>ExceptionHandling</directory>
+        </testsuite>
+
+        <testsuite name="IoC">
+            <directory>IoC</directory>
+        </testsuite>
     </testsuites>
 
     <php>
