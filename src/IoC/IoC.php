@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\IoC;
 
+use App\AdapterGenerator\AdapterFactory;
 use App\IoC\Command\ClearScopesCommand;
 use App\IoC\Command\CurrentScopeCommand;
 use App\IoC\Command\NewScopeCommand;
@@ -26,6 +27,8 @@ class IoC
             'Scopes.New' => self::createNewScopeCommand($scopeManager, $args),
             'Scopes.Current' => self::createCurrentScopeCommand($scopeManager, $args),
             'Scopes.Clear' => new ClearScopesCommand($scopeManager),
+
+            'Adapter' => self::createAdapter($args),
 
             default => $scopeManager->getCurrentScope()->resolve($key, ...$args),
         };
@@ -69,6 +72,28 @@ class IoC
         $scopeId = $args[0];
 
         return new CurrentScopeCommand($scopeManager, $scopeId);
+    }
+
+    private static function createAdapter(array $args): object
+    {
+        if (count($args) < 2) {
+            throw new InvalidArgumentException(
+                'Adapter requires 2 arguments: interface class and object'
+            );
+        }
+
+        [$interfaceClass, $object] = $args;
+
+        if (!is_string($interfaceClass)) {
+            throw new InvalidArgumentException('First argument must be interface class name');
+        }
+
+        if (!is_object($object)) {
+            throw new InvalidArgumentException('Second argument must be an object');
+        }
+
+        $factory = new AdapterFactory();
+        return $factory->createAdapter($interfaceClass, $object);
     }
 
     public static function reset(): void

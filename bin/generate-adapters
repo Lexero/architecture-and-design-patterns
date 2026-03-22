@@ -1,0 +1,44 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use App\AdapterGenerator\AdapterCodeGenerator;
+use App\AdapterGenerator\AdapterGenerator;
+use App\AdapterGenerator\InterfaceParser;
+use App\SpaceObject\Contract\FuelableInterface;
+use App\SpaceObject\Contract\MovableInterface;
+use App\SpaceObject\Contract\RotatableInterface;
+use App\Tests\AdapterGenerator\TestMovableInterface;
+
+$interfacesToGenerate = [
+    MovableInterface::class,
+    RotatableInterface::class,
+    FuelableInterface::class,
+    TestMovableInterface::class,
+];
+
+$outputDir = __DIR__ . '/../src/AdapterGenerator/GeneratedAdapters';
+
+$parser = new InterfaceParser();
+$codeGenerator = new AdapterCodeGenerator();
+$generator = new AdapterGenerator($parser, $codeGenerator);
+
+echo "Generating adapters...\n\n";
+
+try {
+    $generatedFiles = $generator->generateAdapters($interfacesToGenerate, $outputDir);
+
+    echo "Successfully generated " . count($generatedFiles) . " adapter(s):\n";
+    foreach ($generatedFiles as $file) {
+        echo "  - " . basename($file) . "\n";
+    }
+
+    echo "\nAdapters generated successfully!\n";
+    exit(0);
+} catch (Exception $e) {
+    echo "Error generating adapters: " . $e->getMessage() . "\n";
+    exit(1);
+}
