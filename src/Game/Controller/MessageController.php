@@ -23,7 +23,7 @@ final class MessageController extends AbstractController
     ) {
     }
 
-    #[Route('/api/game/message', name: 'game_message', methods: ['POST'])]
+    #[Route('/api/game/message', methods: ['POST'])]
     public function receiveMessage(Request $request): JsonResponse
     {
         try {
