@@ -17,7 +17,7 @@ gw -> gs : создать игру
 gs --> userA : {gameId, wsUrl}
 gs --> userB : {gameId, wsUrl}
 
-== Подключение агентов ==
+== Подключение пользователей ==
 
 userA -> gs : WS connect /ws/game/{gameId}
 userB -> gs : WS connect /ws/game/{gameId}
