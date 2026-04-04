@@ -1,0 +1,64 @@
+@startuml sequence_battle
+title Проведение боя
+
+actor "User A" as userA
+actor "User B" as userB
+participant "API Gateway" as gw
+participant "Game Server" as gs
+participant "Message Broker" as broker
+participant "Rating Service" as rating
+participant "Replay Service" as replay
+participant "Notification Service" as notify
+
+== Создание и запуск игры ==
+
+userA -> gw : POST /api/game\n{player_a, player_b}
+gw -> gs : создать игру
+gs --> userA : {gameId, wsUrl}
+gs --> userB : {gameId, wsUrl}
+
+== Подключение пользователей ==
+
+userA -> gs : WS connect /ws/game/{gameId}
+userB -> gs : WS connect /ws/game/{gameId}
+gs -> gs : CreateGameCommand
+gs --> userA : connected
+gs --> userB : connected
+
+== Игровой процесс ==
+
+loop пока есть живые корабли
+
+    userA -> gs : {operationId: "Move", objectId: "ship-1", args: {speed: 10}}
+    gs -> gs : MessageEndpoint\n→ CommandQueue
+
+    userB -> gs : {operationId: "Shoot", objectId: "ship-4", args: {angle: 45}}
+    gs -> gs : MessageEndpoint\n→ CommandQueue
+
+    gs -> gs : ServerThread:\nexecute commands
+    gs --> userA : state snapshot
+    gs --> userB : state snapshot
+
+    gs -> broker : game.frame {gameId, objects, timestamp}
+    broker -> replay : сохранить кадр
+
+end
+
+== Завершение боя ==
+
+gs -> broker : game.finished {gameId, winner, loser, duration}
+gs --> userA : {result: "win"}
+gs --> userB : {result: "lose"}
+
+broker -> rating : match.results → обновить рейтинг
+broker -> notify : уведомить игроков о завершении
+
+notify --> userA : "Бой завершён, вы победили! +15 очков"
+
+== Просмотр повтора ==
+
+userA -> gw : GET /replays/{gameId}/frames
+gw -> replay : получить кадры
+replay --> userA : покадровые данные боя
+
+@enduml

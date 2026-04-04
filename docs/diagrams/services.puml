@@ -1,0 +1,71 @@
+@startuml services
+!pragma layout smetana
+
+title Space Battle - Services diagram
+skinparam componentStyle rectangle
+
+actor "Игрок" as player
+actor "Организатор" as organizer
+
+package "Client Apps" as clients {
+    component "Web App" as web_app
+    component "Player App" as player_app
+    component "Агент" as agent_app
+}
+
+package "Infrastructure" as infra {
+    component "API Gateway\n[Nginx]" as api_gateway
+}
+
+package "Microservices" as services {
+    package "Core microservices" as core_services {
+        component "User Service\nРегистрация, JWT" as user_svc
+        component "Tournament Service\nТурниры, заявки, расписание" as tournament_svc
+        component "Game Server\nИгровая логика" as game_server
+        component "Rating Service\nРейтинг игроков и турниров" as rating_svc
+        }
+    component "Replay Service\nЗапись и просмотр боёв" as replay_svc
+    component "Notification Service\nPush / Email" as notification_svc
+}
+
+database "User DB\n[PostgreSQL]" as user_db
+database "Tournament DB\n[PostgreSQL]" as tour_db
+database "Game State\n[Redis]" as redis
+database "Rating DB\n[PostgreSQL]" as rating_db
+database "Replay DB\n[PostgreSQL + S3]" as replay_db
+
+queue "Message Broker\n[Kafka]" as broker
+
+cloud "Email/Push service" as email
+
+player --> web_app
+player --> player_app
+player --> agent_app
+organizer --> web_app
+
+web_app --> api_gateway : HTTPS
+player_app --> api_gateway : HTTPS / WS
+agent_app --> api_gateway : WebSocket
+
+api_gateway --> user_svc
+api_gateway --> tournament_svc
+api_gateway --> game_server : HTTP / WS
+api_gateway --> rating_svc
+api_gateway --> replay_svc
+api_gateway --> notification_svc : WS
+
+user_svc --> user_db
+tournament_svc --> tour_db
+game_server --> redis
+rating_svc --> rating_db
+replay_svc --> replay_db
+
+tournament_svc --> broker : publish tournament.events
+game_server --> broker : publish game.events, game.frames
+rating_svc --> broker : consume match.results
+replay_svc --> broker : consume game.frames
+notification_svc --> broker : consume all events
+
+notification_svc --> email : SMTP/API
+
+@enduml
