@@ -1,0 +1,65 @@
+@startuml sequence_tournament
+title Участие в турнире
+
+actor "Игрок" as player
+participant "Web App" as web
+participant "API Gateway" as gw
+participant "Auth Service" as auth
+participant "Tournament Service" as tournament
+participant "Message Broker" as broker
+participant "Notification Service" as notify
+participant "Matchmaking Service" as mm
+participant "Rating Service" as rating
+
+== Регистрация ==
+
+player -> web : заполнить форму регистрации
+web -> gw : POST /auth/register {login, password, email}
+gw -> auth : регистрация
+auth --> gw : JWT token
+gw --> web : token
+web --> player : вход выполнен
+
+== Просмотр турниров ==
+
+player -> web : открыть список турниров
+web -> gw : GET /tournaments?status=upcoming
+gw -> tournament : список турниров
+tournament --> player : список с рейтингами и датами
+
+== Подача заявки ==
+
+player -> web : подать заявку на турнир
+web -> gw : POST /tournaments/{id}/apply
+gw -> auth : проверить JWT
+auth --> gw : userId validated
+gw -> tournament : apply(tournamentId, userId)
+tournament -> tournament : проверить условия\n(рейтинг, дедлайн и т.д.)
+tournament -> broker : publish tournament.applied {tournamentId, userId}
+tournament --> player : статус "заявка принята"
+
+broker -> notify : событие tournament.applied
+notify --> player : email "Заявка на турнир получена"
+
+== Организатор одобряет заявку ==
+
+tournament -> broker : publish tournament.approved {tournamentId, userId}
+broker -> notify : событие tournament.approved
+notify --> player : уведомление "Вы приняты в турнир!"
+
+== Уведомление о скором начале боя ==
+
+tournament -> broker : publish match.scheduled\n{matchId, player_a, player_b, startsAt}
+broker -> notify : событие match.scheduled
+notify --> player : "Ваш бой начнётся через 10 минут"
+
+== После завершения всех боёв турнира ==
+
+tournament -> rating : GET /rating/user/{id} для каждого участника
+tournament -> tournament : рассчитать итоговые места\nи очки турнира
+tournament -> broker : publish tournament.finished {results[]}
+broker -> rating : обновить рейтинг турнира
+broker -> notify : уведомить всех участников
+notify --> player : "Турнир завершён. Ваше место: 2. +50 очков"
+
+@enduml
