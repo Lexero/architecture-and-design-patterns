@@ -26,6 +26,14 @@
         <testsuite name="AdapterGenerator">
             <directory>AdapterGenerator</directory>
         </testsuite>
+
+        <testsuite name="Auth">
+            <directory>Auth</directory>
+        </testsuite>
+
+        <testsuite name="Game">
+            <directory>Game</directory>
+        </testsuite>
     </testsuites>
 
     <php>
