@@ -27,6 +27,14 @@
             <directory>AdapterGenerator</directory>
         </testsuite>
 
+        <testsuite name="ServerThread">
+            <directory>ServerThread</directory>
+        </testsuite>
+
+        <testsuite name="Game">
+            <directory>Game</directory>
+        </testsuite>
+
         <testsuite name="Collision">
             <directory>Collision</directory>
         </testsuite>
