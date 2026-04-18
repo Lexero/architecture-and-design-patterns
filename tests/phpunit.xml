@@ -26,6 +26,10 @@
         <testsuite name="AdapterGenerator">
             <directory>AdapterGenerator</directory>
         </testsuite>
+
+        <testsuite name="Collision">
+            <directory>Collision</directory>
+        </testsuite>
     </testsuites>
 
     <php>
