@@ -34,6 +34,10 @@
         <testsuite name="Game">
             <directory>Game</directory>
         </testsuite>
+
+        <testsuite name="Collision">
+            <directory>Collision</directory>
+        </testsuite>
     </testsuites>
 
     <php>
