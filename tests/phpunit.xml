@@ -26,7 +26,7 @@
         <testsuite name="AdapterGenerator">
             <directory>AdapterGenerator</directory>
         </testsuite>
-      
+
         <testsuite name="Auth">
             <directory>Auth</directory>
         </testsuite>
@@ -36,7 +36,7 @@
         </testsuite>
 
         <testsuite name="Collision">
-            <directory>Collision</directory>>
+            <directory>Collision</directory>
         </testsuite>
     </testsuites>
 
