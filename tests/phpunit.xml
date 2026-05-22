@@ -27,6 +27,10 @@
             <directory>AdapterGenerator</directory>
         </testsuite>
 
+        <testsuite name="ServerThread">
+            <directory>ServerThread</directory>
+        </testsuite>
+
         <testsuite name="Auth">
             <directory>Auth</directory>
         </testsuite>
