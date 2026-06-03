@@ -25,3 +25,9 @@ services:
     App\Auth\Service\JwtService:
         arguments:
             $secret: '%env(JWT_SECRET)%'
+
+    App\Game\Service\WinConditionCheckerInterface:
+        alias: App\Game\Service\ImmediateWinConditionChecker
+
+    App\Game\Security\JwtGuardInterface:
+        alias: App\Game\Security\JwtGuard

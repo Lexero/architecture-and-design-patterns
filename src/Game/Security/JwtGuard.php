@@ -9,7 +9,7 @@ use App\Auth\Exception\JwtValidationException;
 use App\Auth\Service\JwtService;
 use Symfony\Component\HttpFoundation\Request;
 
-final class JwtGuard
+final class JwtGuard implements JwtGuardInterface
 {
     public function __construct(
         private readonly JwtService $jwtService,
