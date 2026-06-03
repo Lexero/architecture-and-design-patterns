@@ -7,6 +7,7 @@ namespace App\Game\Controller;
 use App\Game\DTO\CreateGameRequest;
 use App\Game\DTO\CreateGameResponse;
 use App\Game\Model\GameRecord;
+use App\Game\Service\GameInitializer;
 use App\Game\Service\GameRegistry;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +22,7 @@ final class GameController extends AbstractController
 {
     public function __construct(
         private readonly GameRegistry $gameRegistry,
+        private readonly GameInitializer $gameInitializer,
     ) {
     }
 
@@ -51,6 +53,7 @@ final class GameController extends AbstractController
             );
 
             $this->gameRegistry->addGame($game);
+            $this->gameInitializer->initialize($gameId, $createRequest->participants);
 
             $response = new CreateGameResponse(
                 $gameId,
