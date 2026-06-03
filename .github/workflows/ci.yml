@@ -38,9 +38,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-${{ matrix.php-version }}-
 
-    - name: Generate adapters
-      run: php bin/generate-adapters
-
     - name: Install Dependencies
       run: composer install --no-interaction --no-progress --prefer-dist
 
