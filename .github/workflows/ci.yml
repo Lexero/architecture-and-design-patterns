@@ -26,7 +26,7 @@ jobs:
       with:
         php-version: ${{ matrix.php-version }}
         extensions: ctype, iconv, intl, pdo_pgsql
-        coverage: none
+        coverage: pcov
         tools: composer:v2
 
     - name: Cache Composer packages
@@ -38,8 +38,18 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-${{ matrix.php-version }}-
 
+    - name: Generate adapters
+      run: php bin/generate-adapters
+
     - name: Install Dependencies
       run: composer install --no-interaction --no-progress --prefer-dist
 
-    - name: Run PHPUnit tests
-      run: vendor/bin/phpunit --configuration tests/phpunit.xml
+    - name: Run tests and collect coverage
+      run: vendor/bin/phpunit --configuration tests/phpunit.xml --coverage-clover tests/coverage/clover.xml
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        files: tests/coverage/clover.xml
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
