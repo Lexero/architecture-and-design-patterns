@@ -55,7 +55,8 @@
             <directory>../src</directory>
         </include>
         <exclude>
-            <directory>../src/AdapterGenerator/GeneratedAdapters</directory>
+            <directory>../src/AdapterGenerator/</directory>
+            <file>../src/Game/Service/GameInitializer.php</file>
         </exclude>
     </source>
 
