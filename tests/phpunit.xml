@@ -57,6 +57,13 @@
         <exclude>
             <directory>../src/AdapterGenerator/</directory>
             <file>../src/Game/Service/GameInitializer.php</file>
+            <directory>../src/Auth/Controller/</directory>
+            <directory>../src/Game/Controller/</directory>
+            <directory>../src/Auth/DTO/</directory>
+            <directory>../src/Game/DTO/</directory>
+            <directory>../src/ExceptionHandling/Queue/</directory>
+            <file>../src/Game/Command/SendGameStateCommand.php</file>
+            <file>../src/Game/Endpoint/MessageEndpoint.php</file>
         </exclude>
     </source>
 
