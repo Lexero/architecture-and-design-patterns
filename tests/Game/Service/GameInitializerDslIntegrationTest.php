@@ -14,6 +14,7 @@ use App\SpaceObject\Command\ChangeVelocityCommand;
 use App\SpaceObject\Command\CheckFuelCommand;
 use App\SpaceObject\Command\MoveCommand;
 use App\SpaceObject\Command\RotateCommand;
+use App\SpaceObject\Exception\CommandException;
 use App\SpaceObject\ValueObject\Point;
 use PHPUnit\Framework\TestCase;
 
