@@ -7,3 +7,7 @@ Project for the "Architecture and Design Patterns" course at OTUS https://otus.r
 "Software architecture is the stuff that's hard to change later." - Neal Ford, Mark Richards.
 
 Complexity issues specific to the project and their solutions are provided in the [complexity.md](complexity.md) file.
+
+---
+
+Course completed successfully. Final project submitted. All 13/13 assignments done.
