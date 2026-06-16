@@ -10,10 +10,14 @@ use App\Game\Command\GameTickCommand;
 use App\Game\Command\ShootCommand;
 use App\Game\Entity\Fleet;
 use App\Game\Entity\SpaceShip;
+use App\Game\Factory\MacroCommandFactory;
 use App\Game\Game;
 use App\Game\GameManager;
 use App\IoC\IoC;
 use App\IoC\Scope\ThreadLocalScopeStorage;
+use App\SpaceObject\Command\BurnFuelCommand;
+use App\SpaceObject\Command\ChangeVelocityCommand;
+use App\SpaceObject\Command\CheckFuelCommand;
 use App\SpaceObject\Contract\CommandInterface;
 use RuntimeException;
 use Throwable;
@@ -49,6 +53,7 @@ final class GameInitializer
     public function __construct(
         private readonly GameManager $gameManager,
         private readonly CommandDefinitionRegistry $definitionRegistry,
+        private readonly MacroCommandFactory $macroCommandFactory,
         private readonly WinConditionCheckerInterface $winChecker,
     ) {
     }
@@ -105,12 +110,35 @@ final class GameInitializer
             return $ships[$id];
         })->execute();
 
-        IoC::resolve('IoC.Register', 'Game.Actions.move', static function (SpaceShip $ship) {
+        $this->definitionRegistry->define('Ship.MoveWithFuel', ['CheckFuel', 'Move', 'BurnFuel']);
+        $this->definitionRegistry->define('Ship.RotateWithVelocity', ['Rotate', 'ChangeVelocity']);
+
+        IoC::resolve('IoC.Register', 'CheckFuel', static function (SpaceShip $ship) {
+            return new CheckFuelCommand($ship);
+        })->execute();
+
+        IoC::resolve('IoC.Register', 'Move', static function (SpaceShip $ship) {
             return new MoveCommand($ship);
         })->execute();
 
-        IoC::resolve('IoC.Register', 'Game.Actions.rotate', static function (SpaceShip $ship) {
+        IoC::resolve('IoC.Register', 'BurnFuel', static function (SpaceShip $ship) {
+            return new BurnFuelCommand($ship);
+        })->execute();
+
+        IoC::resolve('IoC.Register', 'Rotate', static function (SpaceShip $ship) {
             return new RotateCommand($ship);
+        })->execute();
+
+        IoC::resolve('IoC.Register', 'ChangeVelocity', static function (SpaceShip $ship) {
+            return new ChangeVelocityCommand($ship);
+        })->execute();
+
+        IoC::resolve('IoC.Register', 'Game.Actions.move', function (SpaceShip $ship) {
+            return $this->macroCommandFactory->build('Ship.MoveWithFuel', $ship);
+        })->execute();
+
+        IoC::resolve('IoC.Register', 'Game.Actions.rotate', function (SpaceShip $ship) {
+            return $this->macroCommandFactory->build('Ship.RotateWithVelocity', $ship);
         })->execute();
 
         IoC::resolve('IoC.Register', 'Game.Actions.shoot',
@@ -133,9 +161,6 @@ final class GameInitializer
         })->execute();
 
         IoC::resolve('IoC.Register', 'Game.Winner', static fn() => $winner)->execute();
-
-        $this->definitionRegistry->define('Ship.MoveWithFuel', ['CheckFuel', 'Move', 'BurnFuel']);
-        $this->definitionRegistry->define('Ship.RotateWithVelocity', ['Rotate', 'ChangeVelocity']);
 
 
         $queue = new ThreadSafeQueue();

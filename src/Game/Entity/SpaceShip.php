@@ -9,10 +9,16 @@ use App\Game\Object\UObject;
 use App\SpaceObject\Contract\FuelableInterface;
 use App\SpaceObject\Contract\MovableInterface;
 use App\SpaceObject\Contract\RotatableInterface;
+use App\SpaceObject\Contract\VelocityChangeableInterface;
 use App\SpaceObject\ValueObject\Point;
 use RuntimeException;
 
-final class SpaceShip implements UObject, MovableInterface, RotatableInterface, FuelableInterface
+final class SpaceShip implements
+    UObject,
+    MovableInterface,
+    RotatableInterface,
+    FuelableInterface,
+    VelocityChangeableInterface
 {
     private array $properties;
 
@@ -79,6 +85,16 @@ final class SpaceShip implements UObject, MovableInterface, RotatableInterface, 
     }
 
     public function setDirection(int $direction): void
+    {
+        $this->properties['direction'] = $direction;
+    }
+
+    public function setVelocity(int $velocity): void
+    {
+        $this->properties['velocity'] = $velocity;
+    }
+
+    public function setVelocityDirection(int $direction): void
     {
         $this->properties['direction'] = $direction;
     }
